@@ -1,7 +1,7 @@
 import React, { useState, useContext,  } from "react";
 import CartContext from "../../Context/CartContext";
 import { Link, useNavigate } from 'react-router-dom';
-import { commitHandler, postTicket, StockCheck } from "../../service/firebase/firebase"
+import { commitHandler, StockCheck } from "../../service/firebase/firebase"
 import { Timestamp } from "firebase/firestore"
 
 const Form = () => {
@@ -39,15 +39,16 @@ const Form = () => {
 
             let Stock = StockCheck(data.items)
 
-            console.log("STOCK: ", Stock)
-            if(commitHandler(Stock))
+            if(Stock.length)
             {
-               postTicket(data) 
+               commitHandler(Stock, data) 
             }
-            else
+            else 
             {
-                alert("NO HAY STOCK DE SUS PRODUCTOS")
+                alert("NO HAY STOCK")
             }
+            
+
             navigate("/dashboard")
             clear()
 

@@ -81,19 +81,6 @@ export const getTickets = () => {
   })
 }
 
-export const postTicket = (data) => {
-  return new Promise ((resolve, reject) => {
-
-    addDoc(collection(db, "forms"), data).catch( (error) => {
-      reject("Error subiendo form: ", error)
-    })
-
-    resolve(true)
-  })
-  
-
-}
-
 export const StockCheck = (Products) => {
   let flag = true
 
@@ -121,17 +108,17 @@ export const StockCheck = (Products) => {
   return {flag, batch};
 }
 
-export const commitHandler = (stockChecked) => {
+export const commitHandler = (stockChecked, data) => {
 
-  console.log("COMMIT: ", stockChecked)
-  
-  if(stockChecked.flag)
-  {
-    stockChecked.batch.commit()
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return new Promise((resolve, reject) => {
+    addDoc(collection(db, 'forms'), data)
+        .then(({ id }) => {
+            stockChecked.batch.commit();
+            resolve(id) ;
+        })
+        .catch((error) => {
+            reject(error);
+        });
+  });
+
 }
